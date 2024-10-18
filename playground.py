@@ -7,7 +7,7 @@ print('test 1')
 """
 
 code2 = """
-print('test 2')
+print('test 2)
 """
 
 exec(code + code2)
