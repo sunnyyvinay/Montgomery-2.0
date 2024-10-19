@@ -60,19 +60,24 @@ def call_gemini(user_prompt: str):
         The last thing that the user said is:
         {user_prompt}
         
+        # Instructions
         Analyze what the user said, and identify whether it is related to the previous string of thought from the user. 
         You have three options for functions to call: nextCommand, speak_to_user, and animate_with_manim.
             the function nextCommand should be used when the user's statement is not related and nothing should be animated or said. This will be a very common case
             the function speak_to_user should be used when you are not sure what to do because the user's train of thought is too vague. You may ask for clarification. Be casual
             the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say.
             
-        Rules when responding:
+        # Rules when responding:
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
-        - do not use any additional formatting for language specifications like ```python...
         - When generating manim code, Assume all code will automatically be executed in python, do NOT include "```python..." in your parameter for the function
-        - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function     
         - Only return the name of the function and its arguments as plain text, wrapped with <> brackets.
         
+        # Rules when generating code:
+        - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
+        - do not use any additional formatting for language specifications like ```python...", assume that the environment you are coding in is already in python
+        - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function    
+        - The class name with the manim code must ALWAYS be "video", so you should ALWAYS be writing code in "class video(Scene)" 
+
         You will output your response in the form:
         <function to call>
         arguments
@@ -94,8 +99,6 @@ def call_gemini(user_prompt: str):
             speak_to_user(response.text.split('>')[1].strip())
         elif functionName == 'animate_with_manim':
             animate_with_manim(response.text.split('>')[1])
-        
-        
         
     except ResourceExhausted as resource_error:
         print(f'You have exceeded the API call rate. Please wait a minute before trying again... \nError message from Google:\n{resource_error}')

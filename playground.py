@@ -24,16 +24,7 @@ from external_functions import speak_to_user, animate_with_manim
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-def speak(text):
-    """speaks using a TTS API
+import subprocess
 
-    Args:
-        text: the text to speak using TTS
-    """
-
-model = genai.GenerativeModel(model_name='gemini-1.5-flash',
-                              tools=[speak])
-
-chat = model.start_chat()
-response = chat.send_message('tell me a story in 1 sentence')
-print(response.text)
+result = subprocess.run(["ls", "-l"], capture_output=True, text=True)
+#print(result.stdout)
