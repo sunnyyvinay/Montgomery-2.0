@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import time
 import google.generativeai as genai
 from google.api_core.exceptions import (ResourceExhausted, FailedPrecondition, 
                                         InvalidArgument, ServiceUnavailable, 
@@ -37,6 +38,8 @@ main_model = genai.GenerativeModel(
         
         The user will not always be addressing you directly. You are an assistant, so even if the user appears to be addressing an audience, animate as if it is speaking to you.
         For example, if the user says "let's do __", interpret it as a command
+        
+        You are also a minimalist. Animate the least amount as possible while still communicating the user's point. Try to go step by step, only animating one line at a time.
         """
 )
 
@@ -68,6 +71,8 @@ def call_gemini(user_prompt: str):
             the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say.
             
         # Rules when responding:
+        - Be minimalist. Generate only the minimum amount of code necessary to reflect what the user is trying to communicate. Do not skip steps. Only work out multiple steps if asked to.
+        
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
         - When generating manim code, Assume all code will automatically be executed in python, do NOT include "```python..." in your parameter for the function
         - Only return the name of the function and its arguments as plain text, wrapped with <> brackets.
@@ -77,6 +82,15 @@ def call_gemini(user_prompt: str):
         - do not use any additional formatting for language specifications like ```python...", assume that the environment you are coding in is already in python
         - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function    
         - The class name with the manim code must ALWAYS be "video", so you should ALWAYS be writing code in "class video(Scene)" 
+        - Since you are writing code in the form of a string, when there is a backslash you must use double backslashes so that it does not get mistaken as an escape character.
+        - do not include any waiting in your code. No time.sleep! Remember, you are minimalist.
+        
+        # Important Thought Process to Follow:
+        - only output the minimum amount of code needed to communicate the user's idea
+        - at every step, silently ask yourself what the position of the location of the current object is
+        - at every step, silently ask yourself whether or not there is any overlap of objects. We absolutely do NOT want any overlap. move things up or down as needed.
+        - make sure that there is no repetitive information. Review your code once it is all generated
+        - If possible do not split up a single equation into multiple separate objects to animate
 
         You will output your response in the form:
         <function to call>
@@ -90,8 +104,12 @@ def call_gemini(user_prompt: str):
         """
         
     try:
+        startTime = time.time()
         response = mainChat.send_message(model_prompt)
-        print(response.text)
+        endTime = time.time()
+        
+        print(f'Gemini took {round((startTime - endTime), 2)} seconds to respond')
+        # print(response.text)
         
         # pseudo function calling
         functionName = response.text.split('>')[0][1:]
@@ -109,7 +127,8 @@ def call_gemini(user_prompt: str):
         print(f'Error message from Google:\n{internal_error}')
     except Exception as e:
         print(f'Unknown error encountered. \nError message from Google:\n{e}')
-    print('fin')
 
-call_gemini("Let's start with the pythagorean theorem equation")
+#call_gemini("Let's start with the pythagorean theorem")
+#call_gemini("Let's start with Einstein's equation of energy in terms of mass")
+
 
