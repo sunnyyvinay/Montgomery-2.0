@@ -9,7 +9,6 @@ from external_functions import speak_to_user, animate_with_manim
 # Load API keys
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-print(os.getenv("GEMINI_API_KEY"))
 
 gemini_thread = None
 retries = 0
@@ -22,15 +21,8 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 
-# delete all text temporarily excluded
-availableFunctions = [
-    speak_to_user, # TTS to speak ot user
-    animate_with_manim
-]
-
 main_model = genai.GenerativeModel(
-    model_name = "gemini-1.5-flash",
-    #tools = availableFunctions,
+    model_name = "gemini-1.5-flash-002",
     generation_config = generation_config,
     system_instruction = """
         You are the world's best teacher, with proficiency especially in a variety of mathematics, physics, and computer science, including but not limited to AI/ML.
@@ -42,6 +34,9 @@ main_model = genai.GenerativeModel(
         For example, if the user says "let's start with Einstein's equation," you will animate the equation.
         If the user says "let's move this variable to the other side" you will reanimate the equation accordingly.
         The user will not necessarily say these words verbatim, but the general idea is that you will animate every single step.
+        
+        The user will not always be addressing you directly. You are an assistant, so even if the user appears to be addressing an audience, animate as if it is speaking to you.
+        For example, if the user says "let's do __", interpret it as a command
         """
 )
 
@@ -62,31 +57,46 @@ def call_gemini(user_prompt: str):
         return
 
     model_prompt = f"""
+        The last thing that the user said is:
         {user_prompt}
+        
+        Analyze what the user said, and identify whether it is related to the previous string of thought from the user. 
+        You have three options for functions to call: nextCommand, speak_to_user, and animate_with_manim.
+            the function nextCommand should be used when the user's statement is not related and nothing should be animated or said. This will be a very common case
+            the function speak_to_user should be used when you are not sure what to do because the user's train of thought is too vague. You may ask for clarification. Be casual
+            the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say.
+            
+        Rules when responding:
+        - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
+        - do not use any additional formatting for language specifications like ```python...
+        - When generating manim code, Assume all code will automatically be executed in python, do NOT include "```python..." in your parameter for the function
+        - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function     
+        - Only return the name of the function and its arguments as plain text, wrapped with <> brackets.
+        
+        You will output your response in the form:
+        <function to call>
+        arguments
+        
+        For example:
+        <speak_to_user>
+        Hello, I am your personal assistant. I am here to help you with your math and physics problems.
+        
+        Ommit any farewells, greetings, and backticks and unnecessary information.
         """
-    
+        
     try:
         response = mainChat.send_message(model_prompt)
-        function_calls = 0
-        for part in response.parts:
-            if fn := part.function_call:
-                if callable(globals().get(fn.name)):
-                    try:
-                        func = globals()[fn.name]
-                        print(f'Function Called: {fn.name}')
-                        kwargs = fn.args
-                        func(**kwargs)
-                        function_calls += 1
-                        retries = 0
-                    except Exception as e:
-                        print('Unexpected error encountered attempting to open function... Trying again...')
-                        print(f'Error Message:\n{e}')
-                        call_gemini(user_prompt) 
-
-        if function_calls == 0:
-            retries += 1
-            call_gemini(user_prompt) #if model only generates text instead of calling function, retry
-
+        print(response.text)
+        
+        # pseudo function calling
+        functionName = response.text.split('>')[0][1:]
+        if functionName == 'speak_to_user':
+            speak_to_user(response.text.split('>')[1].strip())
+        elif functionName == 'animate_with_manim':
+            animate_with_manim(response.text.split('>')[1])
+        
+        
+        
     except ResourceExhausted as resource_error:
         print(f'You have exceeded the API call rate. Please wait a minute before trying again... \nError message from Google:\n{resource_error}')
         # tts_speak('You have exceeded the API call rate. Please wait a minute before trying agian...')
@@ -96,16 +106,7 @@ def call_gemini(user_prompt: str):
         print(f'Error message from Google:\n{internal_error}')
     except Exception as e:
         print(f'Unknown error encountered. \nError message from Google:\n{e}')
+    print('fin')
 
-    gemini_thread = None
+call_gemini("Let's start with the pythagorean theorem equation")
 
-try:
-    call_gemini("say hi")
-except InvalidArgument as keyError:
-    print(f'Your API key is invalid. Please recheck your key. \nError message from Google:\n{keyError}')
-except FailedPrecondition as locationError:
-    print(f'Gemini API free tier is not available in your country. Please enable billing on your project in Google AI Studio. \nError message from Google:\n{locationError}')
-except ServiceUnavailable as serviceError:
-    print(f'The Gemini API service may be temporarily overloaded or down. Please try again later. \nError message from Google:\n{serviceError}')
-except Exception as unknownError:
-    print(f'An unknown error occured while attempting to connect to the API.\nError Message:\n{unknownError}')

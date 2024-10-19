@@ -11,3 +11,29 @@ print('test 2')
 """
 
 exec(code + code2)
+
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+from google.api_core.exceptions import (ResourceExhausted, FailedPrecondition, 
+                                        InvalidArgument, ServiceUnavailable, 
+                                        InternalServerError)
+
+from external_functions import speak_to_user, animate_with_manim
+# Load API keys
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+def speak(text):
+    """speaks using a TTS API
+
+    Args:
+        text: the text to speak using TTS
+    """
+
+model = genai.GenerativeModel(model_name='gemini-1.5-flash',
+                              tools=[speak])
+
+chat = model.start_chat()
+response = chat.send_message('tell me a story in 1 sentence')
+print(response.text)
