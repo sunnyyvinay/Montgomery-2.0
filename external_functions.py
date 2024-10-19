@@ -33,19 +33,10 @@ def animate_with_manim(code):
     print(code) #temporary
     # exec(code)
     
-    
-class intro(Scene):
+# johnny: finished installing latex, location of installation: macintosh 
+class test(Scene):
     def construct(self):
         #create 2 base newton law equations
-        t01 = MathTex(r'F =')
-        t02 = MathTex(r'ma')
-        t0 = VGroup(t01, t02).arrange(RIGHT)
-        t0t = Text("Newton's First Law", font_size=30)
-        t0.move_to(UP*2.5+LEFT*3)
-        t0t.next_to(t0, UP*2.3)
-        t11 = MathTex(r'F_g') 
-        t12 = MathTex(r'= \frac{Gmm}{r^2}') 
-        t1 = VGroup(t11, t12).arrange(RIGHT)
-        t1t = Text("Newton's Law of Gravitation", font_size=30)
-        t1.move_to(UP*2.5+RIGHT*3)
-        t1t.next_to(t1, UP)
+        t01 = MathTex(r'F_g = \frac{Gmm}{r^2}')
+        self.play(Write(t01))
+        self.wait(1)
