@@ -17,7 +17,7 @@ retries = 0
 generation_config = {
     "temperature": 1.2,
     "top_p": 0.95,
-    "top_k": 64,
+    "top_k": 40,
     "max_output_tokens": 3000,
     "response_mime_type": "text/plain",
 }
@@ -29,8 +29,8 @@ availableFunctions = [
 ]
 
 main_model = genai.GenerativeModel(
-    model_name = "gemini-1.5-flash-002",
-    tools = availableFunctions,
+    model_name = "gemini-1.5-flash",
+    #tools = availableFunctions,
     generation_config = generation_config,
     system_instruction = """
         You are the world's best teacher, with proficiency especially in a variety of mathematics, physics, and computer science, including but not limited to AI/ML.
@@ -100,7 +100,7 @@ def call_gemini(user_prompt: str):
     gemini_thread = None
 
 try:
-    mainChat.send_message("Say hi!")
+    call_gemini("say hi")
 except InvalidArgument as keyError:
     print(f'Your API key is invalid. Please recheck your key. \nError message from Google:\n{keyError}')
 except FailedPrecondition as locationError:
