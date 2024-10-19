@@ -4,7 +4,7 @@ Built by Team Recursive Bruins
 - Jonathan Ouyang
 - Johnny Zheng
 - Justin Osbey
-- Eric Zhang
+- Eric Zhou
 
 # How to Use Project
 
