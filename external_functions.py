@@ -1,4 +1,7 @@
 from manim import *
+import tempfile
+import subprocess
+import time
 
 config.media_width = "100%"
 config.verbosity = "WARNING"
@@ -13,8 +16,8 @@ def speak_to_user(text_to_speech):
     Returns:
         0 on successful call
     """
-    print('function speak_to_user called')
-    print(text_to_speech) #temporary
+    print('===== function speak_to_user called =====')
+    print(f'Gemini: {text_to_speech}') #temporary
     return 0
 
 def animate_with_manim(code):
@@ -27,25 +30,24 @@ def animate_with_manim(code):
     Returns:
         0 on successful call
     """
-    print('function animate_with_manim called')
-    if "from manim import *" in code:
-        code = code.replace("from manim import *", "")
+    startTime = time.time()
+    print('===== function animate_with_manim called =====')
+    if "from manim import *" not in code:
+        manimImport = "from manim import *"
+        code = manimImport + code
     print(code) #temporary
-    # exec(code)
     
-    
-class intro(Scene):
-    def construct(self):
-        #create 2 base newton law equations
-        t01 = MathTex(r'F =')
-        t02 = MathTex(r'ma')
-        t0 = VGroup(t01, t02).arrange(RIGHT)
-        t0t = Text("Newton's First Law", font_size=30)
-        t0.move_to(UP*2.5+LEFT*3)
-        t0t.next_to(t0, UP*2.3)
-        t11 = MathTex(r'F_g') 
-        t12 = MathTex(r'= \frac{Gmm}{r^2}') 
-        t1 = VGroup(t11, t12).arrange(RIGHT)
-        t1t = Text("Newton's Law of Gravitation", font_size=30)
-        t1.move_to(UP*2.5+RIGHT*3)
-        t1t.next_to(t1, UP)
+    with tempfile.NamedTemporaryFile(suffix=".py") as tmp:
+        # Write the code to run the generated class to the temporary file
+        tmp.write(code.encode())
+        tmp.flush()
+
+        # Run the temporary file as a manim animation
+        try:
+            #subprocess.run(["conda", "activate", "calhacks"])
+            subprocess.run(["manim", tmp.name, "video", "-pqh"])
+        except subprocess.CalledProcessError as e:
+            print(f"Error running Manim: {e}")
+            
+    endTime = time.time()
+    print(f"Time taken to run Manim: {round((endTime - startTime), 2)} seconds")
