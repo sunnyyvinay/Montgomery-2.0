@@ -56,14 +56,14 @@ def animate_with_manim(code):
 
 def clear_chat():
     global prevManim
-    code = """
-from manim import *
-    
+    code = """from manim import *
 class video(Scene):
     def construct(self):
-        eq = MathTex(Hey, I'm Montgomery! Ask me anything to get started!).scale(2)
-        self.play(Write(eq))
-    
+        line1 = Text("Hey, I'm Montgomery!").scale(1.2)
+        self.play(Write(line1))
+        self.play(line1.animate.shift(UP))
+        line2 = Text("Start by asking me anything!").scale(0.5).next_to(line1, DOWN)
+        self.play(Write(line2))
     """
     
     with open("manim_script.py", "w") as tmp:

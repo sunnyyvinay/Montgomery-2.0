@@ -6,7 +6,7 @@ from google.api_core.exceptions import (ResourceExhausted, FailedPrecondition,
                                         InvalidArgument, ServiceUnavailable, 
                                         InternalServerError)
 
-from external_functions import speak_to_user, animate_with_manim
+from external_functions import speak_to_user, animate_with_manim, clear_chat
 from external_functions import prevManim
 # Load API keys
 load_dotenv()
@@ -60,17 +60,21 @@ def call_gemini(user_prompt: str):
         retries = 0
         print('An unexpected error occurred on Google\'s side.	Wait a bit and retry your request. If the issue persists after retrying, please report it using the Send feedback button in Google AI Studio.')        
         return
+    
+    if 'clear' and 'screen' in user_prompt:
+        clear_chat()
+        return
 
     model_prompt = f"""
         The last thing that the user said is:
         {user_prompt}
         
-        # Instructions
+        # Instructions for Function Calling Conditions
         Analyze what the user said, and identify whether it is related to the previous string of thought from the user. 
         You have three options for functions to call: nextCommand, speak_to_user, animate_with_manim, and clear_chat.
             the function nextCommand should be used when the user's statement is not related and nothing should be animated or said. This will be a very common case
             the function speak_to_user should be used when you are not sure what to do because the user's train of thought is too vague. You may ask for clarification. Be casual
-            the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say.
+            the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say. Do NOT use the animate_with_manim function to clear screen. Use the clear_chat function
             the function clear_chat should be used when the user wants to clear the screen and history. This can either be alluded to by the user saying "clear" or "start over" etc.
             
         # Rules when responding:
@@ -82,6 +86,7 @@ def call_gemini(user_prompt: str):
         
         # ABSOLUTE Rules when generating code:
         YOU MUST FOLLOW THESE RULES NO MATTER WHAT
+        - the return type MUST be an animation. This means that the animation code must have some sort of length for animations, but the animation lengths themselves should be relatively fast.
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
         - List steps sequentially, from top to bottom.
         - do not use any additional formatting for language specifications like ```python...", assume that the environment you are coding in is already in python
@@ -89,6 +94,8 @@ def call_gemini(user_prompt: str):
         - The class name with the manim code must ALWAYS be "video", so you should ALWAYS be writing code in "class video(Scene)" 
         - Since you are writing code in the form of a string, when there is a backslash you must use double backslashes so that it does not get mistaken as an escape character.
         - do not include any waiting in your code. No time.sleep! Remember, you are minimalist.
+        - all text/equations/graphs MUST have appear on screen. This is most often done with an animation function call like Write using the manim library. Do NOT forget about this. This would be very very very bad!
+            - Check all of your code for self.play OR the Write command, you MUST 100% have at least one of these in your code in order to generate an animation. it is not acceptable in ANY circumstance to exclude an animation execution
         
         # Important Thought Process to Follow:
         - only output the minimum amount of code needed to communicate the user's idea
@@ -108,6 +115,7 @@ def call_gemini(user_prompt: str):
         - animations typically can contain at most 1 graph (if any)
         - when text/equations are scaled 1x, about 10 lines can be displayed at once. Consider this when assigning locations to equations
         - when text/equations are scaled 2x, about 6 lines can be displayed at one. Consider this when assigning locations to equations
+        - graphs and plots should NOT be shifted NO MATTER WHAT because shifting the graph will change the actual value of the function. Do NOT apply movement transformations to graphs or plots
             
         # Important Optimization Rules
         Manim animations take very long to animate. The longer the animation, the longer it takes to render. In light of this, generate the code with the following in mind:
@@ -153,6 +161,8 @@ def call_gemini(user_prompt: str):
             speak_to_user(response.text.split('>')[1].strip())
         elif functionName == 'animate_with_manim':
             animate_with_manim(response.text.split('>')[1])
+        elif functionName == 'clear_chat':
+            clear_chat()
         
     except ResourceExhausted as resource_error:
         print(f'You have exceeded the API call rate. Please wait a minute before trying again... \nError message from Google:\n{resource_error}')

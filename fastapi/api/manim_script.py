@@ -1,6 +1,9 @@
 from manim import *
 class video(Scene):
     def construct(self):
-        equation = MathTex("a^2 + b^2 = c^2").scale(2)
-        self.add(equation.to_edge(UP))
-
+        line1 = Text("Hey, I'm Montgomery!").scale(1.2)
+        self.play(Write(line1))
+        self.play(line1.animate.shift(UP))
+        line2 = Text("Start by asking me anything!").scale(0.5).next_to(line1, DOWN)
+        self.play(Write(line2))
+    
