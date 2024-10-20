@@ -32,7 +32,7 @@ async def process_user_input(user_input: UserInput):
     # Call the Gemini function with the user input
     call_gemini(user_input.user_input)
 
-    video_path = "media\videos\manim_script\1080p60\video.mp4"
+    video_path = "media/videos/manim_script/1080p60/video.mp4"
 
     if os.path.exists(video_path):
         return FileResponse(video_path, media_type="video/mp4")
