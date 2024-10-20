@@ -91,6 +91,11 @@ def call_gemini(user_prompt: str):
         - at every step, silently ask yourself whether or not there is any overlap of objects. We absolutely do NOT want any overlap. move things up or down as needed.
         - make sure that there is no repetitive information. Review your code once it is all generated
         - If possible do not split up a single equation into multiple separate objects to animate
+        - Consider how many lines are being displayed. Remember that **the manim animation output window is limited**. What this means is that if you have more than 3 lines being displayed you must shift the lines up vertically to make room to ensure all lines can be read.
+        - Do not overcomplicate the code. Beware of overlap. Mentally analyze the positioning of each line object and ensure that:
+            1. There is no overlap between lines
+            2. All lines are visible (if there are lots of lines, shift them upward!)
+            3. People like it when the text is centered on the screen! Make vertical/horizontal shifts accordingly.
 
         You will output your response in the form:
         <function to call>
