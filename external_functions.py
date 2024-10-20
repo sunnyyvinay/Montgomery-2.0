@@ -37,14 +37,14 @@ def animate_with_manim(code):
         code = manimImport + code
     print(code) #temporary
     
-    with tempfile.NamedTemporaryFile(suffix=".py") as tmp:
+    #with tempfile.NamedTemporaryFile(suffix=".py") as tmp:
+    with open("manim_script.py", "w") as tmp:
         # Write the code to run the generated class to the temporary file
-        tmp.write(code.encode())
+        tmp.write(code)
         tmp.flush()
 
         # Run the temporary file as a manim animation
         try:
-            #subprocess.run(["conda", "activate", "calhacks"])
             subprocess.run(["manim", tmp.name, "video", "-pqh"])
         except subprocess.CalledProcessError as e:
             print(f"Error running Manim: {e}")

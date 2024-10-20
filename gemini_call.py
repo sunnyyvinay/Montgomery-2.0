@@ -9,7 +9,7 @@ from google.api_core.exceptions import (ResourceExhausted, FailedPrecondition,
 from external_functions import speak_to_user, animate_with_manim
 # Load API keys
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 gemini_thread = None
 retries = 0
