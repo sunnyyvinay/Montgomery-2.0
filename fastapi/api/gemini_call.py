@@ -19,7 +19,7 @@ generation_config = {
     "temperature": 1.0,
     "top_p": 0.95,
     "top_k": 40,
-    "max_output_tokens": 500,
+    "max_output_tokens": 2000,
     "response_mime_type": "text/plain",
 }
 
@@ -90,6 +90,7 @@ def call_gemini(user_prompt: str):
         - the return type MUST be an animation. This means that the animation code must have some sort of length for animations, but the animation lengths themselves should be relatively fast.
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
         - List steps sequentially, from top to bottom.
+        - equations or text should start at the top CENTER of the screen
         - do not use any additional formatting for language specifications like ```python...", assume that the environment you are coding in is already in python
         - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function    
         - The class name with the manim code must ALWAYS be "video", so you should ALWAYS be writing code in "class video(Scene)" 
