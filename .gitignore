@@ -1,1 +1,6 @@
+.gitignore
+
 .env
+node_modules
+__pycache__
+media
