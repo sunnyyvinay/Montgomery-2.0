@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from gemini_call import call_gemini
 from external_functions import speak_to_user, animate_with_manim
+import os
 
 app = FastAPI()
 
@@ -28,11 +30,11 @@ def health_check():
 @app.post("/submit")
 async def process_user_input(user_input: UserInput):
     # Call the Gemini function with the user input
-    result = call_gemini(user_input.user_input)
+    call_gemini(user_input.user_input)
 
-    # Optionally call other functions like speak_to_user or animate_with_manim if needed
-    # speak_to_user(result)
-    # animate_with_manim(result)
+    video_path = "media\videos\manim_script\1080p60\video.mp4"
 
-    # Return a response (you can return anything, including the result from Gemini)
-    return {"message": "Processed input", "result": result}
+    if os.path.exists(video_path):
+        return FileResponse(video_path, media_type="video/mp4")
+    else:
+        return {"error": "Video generation failed or video not found."}

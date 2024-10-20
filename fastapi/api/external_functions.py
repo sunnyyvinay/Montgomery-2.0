@@ -48,7 +48,7 @@ def animate_with_manim(code):
 
         # Run the temporary file as a manim animation
         try:
-            subprocess.run(["manim", tmp.name, "video", "-pqh"])
+            subprocess.run(["manim", tmp.name, "video", "-qh"])
         except subprocess.CalledProcessError as e:
             print(f"Error running Manim: {e}")
             
