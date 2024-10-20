@@ -53,6 +53,7 @@ def call_gemini(user_prompt: str):
         recorder: the recorder object must be created in the main process, so it is passed in to this function as an argument and used
     """
     global gemini_thread, retries
+    print(f'Command: {user_prompt}')
 
     # if function has been recursively called 3 times (in 3 attempts to retry a prompt), break out of loop
     if retries == 3:
@@ -66,10 +67,11 @@ def call_gemini(user_prompt: str):
         
         # Instructions
         Analyze what the user said, and identify whether it is related to the previous string of thought from the user. 
-        You have three options for functions to call: nextCommand, speak_to_user, and animate_with_manim.
+        You have three options for functions to call: nextCommand, speak_to_user, animate_with_manim, and clear_chat.
             the function nextCommand should be used when the user's statement is not related and nothing should be animated or said. This will be a very common case
             the function speak_to_user should be used when you are not sure what to do because the user's train of thought is too vague. You may ask for clarification. Be casual
             the function animate_with_manim should be used when the user's statement is related to the previous string of thought from the user. You will use python code for manim animation to draw out whatever they say.
+            the function clear_chat should be used when the user wants to clear the screen and history. This can either be alluded to by the user saying "clear" or "start over" etc.
             
         # Rules when responding:
         - Be minimalist. Generate only the minimum amount of code necessary to reflect what the user is trying to communicate. Do not skip steps. Only work out multiple steps if asked to.
@@ -110,13 +112,21 @@ def call_gemini(user_prompt: str):
         # Important Optimization Rules
         Manim animations take very long to animate. The longer the animation, the longer it takes to render. In light of this, generate the code with the following in mind:
         
-        Here is the previous code:
+        ### You will generate code in 2 phases:
+        ### Phase 1:
+        Here is the previous code that you wrote:
         {prevManim}
+        
+        If there is an animation to display, the very first part of the new manim code that you generate should be generating all of the equations, texts, and graphs shown on screen, but this time OMIT any delays or pauses in the animation and omit any animations.
+        Your goal should be to display all of the information that was previously shown as fast as possible and in the same location, because we want to extend that video.
         
         Instead of reanimating all of the previous code, try to optimize the code by:
         - animating the past code all at once, instead of animating each line separately
         - only animating the new code, instead of animating the entire code
         - if there is no old code, disregard these instructions
+        
+        ### Phase 2:
+        After you have generated the code for phase 1, you will generate any new code that you need to animate.       
 
         You will output your response in the form:
         <function to call>
