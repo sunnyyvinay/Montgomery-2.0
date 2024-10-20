@@ -1,4 +1,2 @@
 # This file is used internally by FFMPEG.
-file 'file:/Users/jonathanouyang/CalHacks-Project/fastapi/api/media/videos/manim_script/1080p60/partial_movie_files/video/3529212410_2787122674_223132457.mp4'
-file 'file:/Users/jonathanouyang/CalHacks-Project/fastapi/api/media/videos/manim_script/1080p60/partial_movie_files/video/3040924799_3990072074_1208912845.mp4'
-file 'file:/Users/jonathanouyang/CalHacks-Project/fastapi/api/media/videos/manim_script/1080p60/partial_movie_files/video/3040924799_954834716_2866255631.mp4'
+file 'file:/Users/jonathanouyang/CalHacks-Project/fastapi/api/media/videos/manim_script/1080p60/partial_movie_files/video/3529212410_449375385_223132457.mp4'

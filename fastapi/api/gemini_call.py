@@ -24,8 +24,8 @@ generation_config = {
 }
 
 main_model = genai.GenerativeModel(
-    #model_name = "gemini-1.5-flash-002",
-    model_name = "gemini-1.5-flash-8b-exp-0924",
+    model_name = "gemini-1.5-flash-002",
+    #model_name = "gemini-1.5-flash-8b",
     generation_config = generation_config,
     system_instruction = """
         You are the world's best teacher, with proficiency especially in a variety of mathematics, physics, and computer science, including but not limited to AI/ML.
@@ -53,7 +53,7 @@ def call_gemini(user_prompt: str):
     Args:
         recorder: the recorder object must be created in the main process, so it is passed in to this function as an argument and used
     """
-    global gemini_thread, retries
+    global gemini_thread, retries, mainChat, main_model
     print(f'Command: {user_prompt}')
 
     # if function has been recursively called 3 times (in 3 attempts to retry a prompt), break out of loop
@@ -98,6 +98,7 @@ def call_gemini(user_prompt: str):
         - do not include any waiting in your code. No time.sleep! Remember, you are minimalist.
         - all text/equations/graphs MUST have appear on screen. This is most often done with an animation function call like Write using the manim library. Do NOT forget about this. This would be very very very bad!
             - Check all of your code for self.play OR the Write command, you MUST 100% have at least one of these in your code in order to generate an animation. it is not acceptable in ANY circumstance to exclude an animation execution
+        - graphs of equations must include the axes displayed in the visual as well
         
         # Important Thought Process to Follow:
         - only output the minimum amount of code needed to communicate the user's idea
@@ -105,6 +106,7 @@ def call_gemini(user_prompt: str):
         - at every step, silently ask yourself whether or not there is any overlap of objects. We absolutely do NOT want any overlap. move things up or down as needed.
         - make sure that there is no repetitive information. Review your code once it is all generated
         - If possible do not split up a single equation into multiple separate objects to animate
+        - if the user wants to draw/graph something, use a graph function from the manim library.
         - Consider how many lines are being displayed. Remember that **the manim animation output window is limited**. What this means is that if you have more than 3 lines being displayed you must shift the lines up vertically to make room to ensure all lines can be read.
         - Do not overcomplicate the code. Beware of overlap. Mentally analyze the positioning of each line object and ensure that:
             1. There is no overlap between lines
@@ -118,7 +120,7 @@ def call_gemini(user_prompt: str):
         - when text/equations are scaled 1x, about 10 lines can be displayed at once. Consider this when assigning locations to equations
         - when text/equations are scaled 2x, about 6 lines can be displayed at one. Consider this when assigning locations to equations
         - graphs and plots should NOT be shifted NO MATTER WHAT because shifting the graph will change the actual value of the function. Do NOT apply movement transformations to graphs or plots
-            
+        
         # Important Optimization Rules
         Manim animations take very long to animate. The longer the animation, the longer it takes to render. In light of this, generate the code with the following in mind:
         
@@ -164,6 +166,7 @@ def call_gemini(user_prompt: str):
         elif functionName == 'animate_with_manim':
             animate_with_manim(response.text.split('>')[1])
         elif functionName == 'clear_chat':
+            mainChat = main_model.start_chat(history=[], enable_automatic_function_calling=False)
             clear_chat()
         
     except ResourceExhausted as resource_error:
