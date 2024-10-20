@@ -16,15 +16,16 @@ gemini_thread = None
 retries = 0
 
 generation_config = {
-    "temperature": 1.2,
+    "temperature": 1.0,
     "top_p": 0.95,
     "top_k": 40,
-    "max_output_tokens": 3000,
+    "max_output_tokens": 500,
     "response_mime_type": "text/plain",
 }
 
 main_model = genai.GenerativeModel(
-    model_name = "gemini-1.5-flash-002",
+    #model_name = "gemini-1.5-flash-002",
+    model_name = "gemini-1.5-flash-8b-exp-0924",
     generation_config = generation_config,
     system_instruction = """
         You are the world's best teacher, with proficiency especially in a variety of mathematics, physics, and computer science, including but not limited to AI/ML.
