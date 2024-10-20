@@ -4,3 +4,7 @@
 node_modules
 __pycache__
 media
+__pycache__
+
+fastapi/api/media
+fastapi/api/__pycache__

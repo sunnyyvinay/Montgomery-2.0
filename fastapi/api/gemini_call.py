@@ -72,13 +72,15 @@ def call_gemini(user_prompt: str):
             
         # Rules when responding:
         - Be minimalist. Generate only the minimum amount of code necessary to reflect what the user is trying to communicate. Do not skip steps. Only work out multiple steps if asked to.
-        
+        - all steps should be displayed sequentially downward. That means the earliest step should the top most step.
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
         - When generating manim code, Assume all code will automatically be executed in python, do NOT include "```python..." in your parameter for the function
         - Only return the name of the function and its arguments as plain text, wrapped with <> brackets.
         
-        # Rules when generating code:
+        # ABSOLUTE Rules when generating code:
+        YOU MUST FOLLOW THESE RULES NO MATTER WHAT
         - do not use any additional formatting like backticks, <tool_code>, or unnecessary wrappers.
+        - List steps sequentially, from top to bottom.
         - do not use any additional formatting for language specifications like ```python...", assume that the environment you are coding in is already in python
         - When generating manim code, Assume all necessary manim libraries are already imported properly. Do NOT import the manim library in your parameter for the function    
         - The class name with the manim code must ALWAYS be "video", so you should ALWAYS be writing code in "class video(Scene)" 
@@ -96,6 +98,14 @@ def call_gemini(user_prompt: str):
             1. There is no overlap between lines
             2. All lines are visible (if there are lots of lines, shift them upward!)
             3. People like it when the text is centered on the screen! Make vertical/horizontal shifts accordingly.
+            4. All steps should be formed sequentially and downwards. what this means that visually step 2 should appear BELOW step 1, and step 3 should appear BELOW step 2, and so on.
+            
+        # Important Background Information Regarding Manim Animations
+        Use the following information to help guide your choices of positioning
+        - animations typically can contain at most 1 graph (if any)
+        - when text/equations are scaled 1x, about 10 lines can be displayed at once. Consider this when assigning locations to equations
+        - when text/equations are scaled 2x, about 6 lines can be displayed at one. Consider this when assigning locations to equations
+            
 
         You will output your response in the form:
         <function to call>
