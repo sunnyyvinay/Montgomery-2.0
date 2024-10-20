@@ -7,6 +7,7 @@ from google.api_core.exceptions import (ResourceExhausted, FailedPrecondition,
                                         InternalServerError)
 
 from external_functions import speak_to_user, animate_with_manim
+from external_functions import prevManim
 # Load API keys
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -106,6 +107,16 @@ def call_gemini(user_prompt: str):
         - when text/equations are scaled 1x, about 10 lines can be displayed at once. Consider this when assigning locations to equations
         - when text/equations are scaled 2x, about 6 lines can be displayed at one. Consider this when assigning locations to equations
             
+        # Important Optimization Rules
+        Manim animations take very long to animate. The longer the animation, the longer it takes to render. In light of this, generate the code with the following in mind:
+        
+        Here is the previous code:
+        {prevManim}
+        
+        Instead of reanimating all of the previous code, try to optimize the code by:
+        - animating the past code all at once, instead of animating each line separately
+        - only animating the new code, instead of animating the entire code
+        - if there is no old code, disregard these instructions
 
         You will output your response in the form:
         <function to call>
@@ -142,8 +153,4 @@ def call_gemini(user_prompt: str):
         print(f'Error message from Google:\n{internal_error}')
     except Exception as e:
         print(f'Unknown error encountered. \nError message from Google:\n{e}')
-
-#call_gemini("Let's start with the pythagorean theorem")
-#call_gemini("Let's start with Einstein's equation of energy in terms of mass")
-
-
+        

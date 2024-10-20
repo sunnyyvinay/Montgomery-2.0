@@ -6,6 +6,8 @@ import time
 config.media_width = "100%"
 config.verbosity = "WARNING"
 
+prevManim = "This is your first code generation. There is currently no previous code to analyze"
+
 def speak_to_user(text_to_speech):
     """
     Speak to user (verbal feedback), using text to speech via an API
@@ -30,6 +32,7 @@ def animate_with_manim(code):
     Returns:
         0 on successful call
     """
+    global prevManim
     startTime = time.time()
     print('===== function animate_with_manim called =====')
     if "from manim import *" not in code:
@@ -51,3 +54,5 @@ def animate_with_manim(code):
             
     endTime = time.time()
     print(f"Time taken to run Manim: {round((endTime - startTime), 2)} seconds")
+    
+    prevManim = code
