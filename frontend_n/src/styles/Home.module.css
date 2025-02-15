@@ -1,0 +1,8 @@
+  .main {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6rem;
+    min-height: 20vh;
+  }
