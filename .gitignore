@@ -2,9 +2,8 @@
 
 .env
 node_modules
-__pycache__
-media
-__pycache__
+*/__pycache__
+*/media
 
 fastapi/api/media
 fastapi/api/__pycache__
