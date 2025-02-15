@@ -8,9 +8,11 @@ As math students for most of our lives, we’ve often struggled with not fully u
 
 ## What it does
 
-Project Montgomery transforms a simple math problem into an animation video using the Manim library in Python (developed by the famous YouTuber 3Blue1Brown) and Google Gemini to help math students better visualize the problem that they are given. Users can input what to be displayed and be able to see the changes happening to the equations in real time.
+Project Montgomery transforms a simple math problem into an animation video that plays seamlessly using the Manim library in Python (developed by the famous YouTuber 3Blue1Brown) and Google Gemini to help math students better visualize the problem that they are given.
 
 ![Image of Montgomery's home page](display_images/image.png)
+
+Users can input what to be displayed and be able to see the changes happening to the equations in real time. We also conveniently included some sample use cases on the left hand side to demonstrate quickly what Montgomery is capable of doing!
 
 ![Image of Montgomery's ability to generate animations](display_images/image-1.png)
 
