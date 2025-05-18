@@ -4,6 +4,10 @@
 node_modules
 */__pycache__
 */media
+.next
+__pycache__
+*.pyc
+*.pyo
 
 fastapi/api/media
 fastapi/api/__pycache__
