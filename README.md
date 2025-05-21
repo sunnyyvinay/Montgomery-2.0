@@ -26,7 +26,7 @@ Built by Team Recursive Bruins at CalHacks 11.0
 # Installation
 
 1. Clone github repository
-   `git clone https://github.com/JonOuyang/CalHacks-Project`
+   `git clone https://github.com/sunnyyvinay/Montgomery-2.0.git`
 
 2. Create environment for project using command:
    `conda env create -f environment.yml`
