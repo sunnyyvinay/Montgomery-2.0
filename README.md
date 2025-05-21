@@ -35,4 +35,14 @@ Built by Team Recursive Bruins at CalHacks 11.0
    `pip install -q -U google-generativeai`
 
 4. Install required modules for rest of project:
-   `pip install -r requirements.txt'
+   `pip install -r requirements.txt`
+
+5. Install frontend packages:
+   `cd frontend && npm install`
+
+6. Run the backend locally:
+   `cd backend/fastapi/api`
+   `uvicorn main2:app --reload`
+
+7. Run the frontend locally:
+   `cd frontend && npm run dev`
